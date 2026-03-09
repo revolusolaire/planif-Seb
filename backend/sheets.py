@@ -27,9 +27,13 @@ CREDENTIALS_FILE = os.getenv("GOOGLE_CREDENTIALS_FILE", "google_credentials.json
 COLUMN_MAP = {
     "prenom": os.getenv("COL_PRENOM", "Prénom"),
     "nom": os.getenv("COL_NOM", "Nom"),
-    "telephone": os.getenv("COL_TEL", "Téléphone"),
+    "telephone": os.getenv("COL_TEL", "N° de tel"),
     "email": os.getenv("COL_EMAIL", "Email"),
-    "campagne": os.getenv("COL_CAMPAGNE", "Campagne"),
+    "campagne": os.getenv("COL_CAMPAGNE", ""),
+    "entreprise": os.getenv("COL_ENTREPRISE", "Entreprise"),
+    "demande": os.getenv("COL_DEMANDE", "Demande"),
+    "horaires_rappel": os.getenv("COL_HORAIRES", "Horaires pour rappel"),
+    "remarques": os.getenv("COL_REMARQUES", "Remarques"),
 }
 
 
@@ -126,6 +130,10 @@ def sync_leads(db: Session, nouvelles_alertes_callback=None) -> int:
                 telephone=telephone,
                 email=extraire_champ(row, COLUMN_MAP["email"]),
                 campagne=extraire_champ(row, COLUMN_MAP["campagne"]),
+                entreprise=extraire_champ(row, COLUMN_MAP["entreprise"]),
+                demande=extraire_champ(row, COLUMN_MAP["demande"]),
+                horaires_rappel=extraire_champ(row, COLUMN_MAP["horaires_rappel"]),
+                remarques=extraire_champ(row, COLUMN_MAP["remarques"]),
                 source_sheet=sheet_id,
                 date_arrivee=datetime.utcnow(),
                 statut="Nouveau",

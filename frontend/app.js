@@ -159,22 +159,31 @@ async function rafraichirFiche(id) {
           <span>${l.email ? `<a href="mailto:${echap(l.email)}">${echap(l.email)}</a>` : '—'}</span>
         </div>
         <div class="fiche-field">
-          <label>Campagne</label>
-          <span>${echap(l.campagne) || '—'}</span>
+          <label>Entreprise</label>
+          <span>${echap(l.entreprise) || '—'}</span>
         </div>
         <div class="fiche-field">
           <label>Statut actuel</label>
           <span class="badge ${badgeClass(l.statut)}">${echap(l.statut)}</span>
         </div>
         <div class="fiche-field">
-          <label>Email relance</label>
+          <label>Demande</label>
+          <span>${echap(l.demande) || '—'}</span>
+        </div>
+        <div class="fiche-field">
+          <label>Horaires pour rappel</label>
+          <span>${echap(l.horaires_rappel) || '—'}</span>
+        </div>
+        <div class="fiche-field">
+          <label>Email relance auto</label>
           <span>${l.email_relance_envoye ? '✅ Envoyé' : '⏳ Pas encore'}</span>
         </div>
         <div class="fiche-field">
-          <label>Source</label>
-          <span style="font-size:12px;word-break:break-all;">${echap(l.source_sheet) || '—'}</span>
+          <label>Campagne</label>
+          <span>${echap(l.campagne) || '—'}</span>
         </div>
       </div>
+      ${l.remarques ? `<div style="background:#fffbeb;border-left:4px solid #f59e0b;padding:10px 14px;border-radius:6px;margin-bottom:16px;font-size:14px;"><strong>Remarques :</strong> ${echap(l.remarques)}</div>` : ''}
 
       <div class="section-title">Changer le statut</div>
       <div class="statut-form">

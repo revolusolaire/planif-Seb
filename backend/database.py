@@ -23,6 +23,11 @@ class Lead(Base):
     # Source
     source_sheet = Column(String, default="")  # nom du Google Sheet
     campagne = Column(String, default="")
+    # Champs supplémentaires du sheet
+    entreprise = Column(String, default="")
+    demande = Column(String, default="")
+    horaires_rappel = Column(String, default="")
+    remarques = Column(Text, default="")
     # Timing
     date_arrivee = Column(DateTime, default=datetime.utcnow)
     # Statut CRM
