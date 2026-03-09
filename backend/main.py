@@ -279,6 +279,54 @@ def export_leads_csv(
     )
 
 
+@app.get("/api/leads/export/json")
+def export_leads_json(
+    statut: Optional[str] = Query(None),
+    search: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+):
+    """Export des leads au format JSON (respecte les filtres actifs)."""
+    q = db.query(Lead)
+    if statut:
+        q = q.filter(Lead.statut == statut)
+    if search:
+        terme = f"%{search}%"
+        q = q.filter(
+            Lead.prenom.ilike(terme)
+            | Lead.nom.ilike(terme)
+            | Lead.telephone.ilike(terme)
+            | Lead.email.ilike(terme)
+        )
+    leads_list = q.order_by(Lead.date_arrivee.desc()).all()
+
+    data = [
+        {
+            "id": l.id,
+            "prenom": l.prenom,
+            "nom": l.nom,
+            "telephone": l.telephone,
+            "email": l.email,
+            "entreprise": l.entreprise,
+            "campagne": l.campagne,
+            "demande": l.demande,
+            "horaires_rappel": l.horaires_rappel,
+            "remarques": l.remarques,
+            "statut": l.statut,
+            "date_arrivee": l.date_arrivee.strftime("%d/%m/%Y %H:%M") if l.date_arrivee else "",
+            "source_sheet": l.source_sheet,
+        }
+        for l in leads_list
+    ]
+
+    import json
+    filename = f"leads_revolusol_{datetime.utcnow().strftime('%Y%m%d_%H%M')}.json"
+    return StreamingResponse(
+        iter([json.dumps(data, ensure_ascii=False, indent=2)]),
+        media_type="application/json; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
 @app.post("/api/sync")
 def sync_manuel(db: Session = Depends(get_db)):
     """Déclenche une synchronisation manuelle des Google Sheets."""

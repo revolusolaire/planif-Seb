@@ -109,6 +109,15 @@ function exporterCSV() {
   window.location.href = url;
 }
 
+function exporterJSON() {
+  const statut = document.getElementById('filtre-statut').value;
+  const search = document.getElementById('search-input').value;
+  let url = '/api/leads/export/json?';
+  if (statut) url += `statut=${encodeURIComponent(statut)}&`;
+  if (search) url += `search=${encodeURIComponent(search)}&`;
+  window.location.href = url;
+}
+
 // ── Sync manuel ─────────────────────────────────────────────────
 
 async function syncManuel() {
