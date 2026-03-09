@@ -98,6 +98,17 @@ function rechercherDebounce() {
   debounceTimer = setTimeout(chargerLeads, 350);
 }
 
+// ── Export CSV ──────────────────────────────────────────────────
+
+function exporterCSV() {
+  const statut = document.getElementById('filtre-statut').value;
+  const search = document.getElementById('search-input').value;
+  let url = '/api/leads/export?';
+  if (statut) url += `statut=${encodeURIComponent(statut)}&`;
+  if (search) url += `search=${encodeURIComponent(search)}&`;
+  window.location.href = url;
+}
+
 // ── Sync manuel ─────────────────────────────────────────────────
 
 async function syncManuel() {

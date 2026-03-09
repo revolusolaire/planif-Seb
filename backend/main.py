@@ -1,6 +1,8 @@
 """
 CRM RevoluSolaire — API principale
 """
+import csv
+import io
 import os
 import logging
 from datetime import datetime
@@ -9,7 +11,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -230,6 +232,51 @@ def creer_appel(data: AppelCreate, db: Session = Depends(get_db)):
 
     db.commit()
     return {"ok": True, "appel_id": appel.id, "nouveau_statut": lead.statut}
+
+
+@app.get("/api/leads/export")
+def export_leads_csv(
+    statut: Optional[str] = Query(None),
+    search: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+):
+    """Export des leads au format CSV (respecte les filtres actifs)."""
+    q = db.query(Lead)
+    if statut:
+        q = q.filter(Lead.statut == statut)
+    if search:
+        terme = f"%{search}%"
+        q = q.filter(
+            Lead.prenom.ilike(terme)
+            | Lead.nom.ilike(terme)
+            | Lead.telephone.ilike(terme)
+            | Lead.email.ilike(terme)
+        )
+    leads_list = q.order_by(Lead.date_arrivee.desc()).all()
+
+    output = io.StringIO()
+    writer = csv.writer(output, delimiter=";", quoting=csv.QUOTE_ALL)
+    writer.writerow([
+        "Prénom", "Nom", "Téléphone", "Email", "Entreprise",
+        "Campagne", "Demande", "Horaires rappel", "Remarques",
+        "Statut", "Date arrivée", "Source sheet",
+    ])
+    for l in leads_list:
+        writer.writerow([
+            l.prenom, l.nom, l.telephone, l.email, l.entreprise,
+            l.campagne, l.demande, l.horaires_rappel, l.remarques,
+            l.statut,
+            l.date_arrivee.strftime("%d/%m/%Y %H:%M") if l.date_arrivee else "",
+            l.source_sheet,
+        ])
+
+    output.seek(0)
+    filename = f"leads_revolusol_{datetime.utcnow().strftime('%Y%m%d_%H%M')}.csv"
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv; charset=utf-8-sig",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @app.post("/api/sync")
