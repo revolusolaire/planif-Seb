@@ -1,0 +1,14 @@
+{
+  "name": "planif-seb-lead-management",
+  "version": "1.0.0",
+  "description": "Système automatisé de gestion des leads — SMS + appel vocal IA via Twilio",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "twilio": "^5.3.3"
+  }
+}

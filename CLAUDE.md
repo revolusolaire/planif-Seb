@@ -6,9 +6,11 @@ This file provides context, conventions, and workflows for AI assistants (Claude
 
 ## Project Overview
 
-**planif-Seb** is a planning/scheduling application (French: *planification*). This file will be updated once the project's stack, purpose, and architecture are established.
+**planif-Seb** is an automated lead management system. When a new lead is added to a Google Sheet, the system automatically sends a welcome SMS and initiates an AI voice call via Twilio.
 
-> **Status**: Repository initialized — no source code committed yet. Update this file after bootstrapping the project.
+**Stack**: Node.js, Express, Twilio (SMS + Voice), Make/Zapier (Google Sheets trigger)
+
+> **Status**: Initial implementation complete — webhook server with SMS and AI voice call.
 
 ---
 
@@ -16,11 +18,18 @@ This file provides context, conventions, and workflows for AI assistants (Claude
 
 ```
 planif-Seb/
-├── CLAUDE.md          # This file — AI assistant guide
-└── (project files)    # To be added
+├── CLAUDE.md               # This file — AI assistant guide
+├── .env.example            # Required environment variables (template)
+├── package.json
+└── src/
+    ├── server.js           # Express app entry point
+    ├── routes/
+    │   ├── webhook.js      # POST /webhook/lead — receives lead, triggers SMS + call
+    │   └── twiml.js        # GET /twiml/welcome — returns TwiML XML for voice call
+    └── services/
+        ├── sms.js          # Sends welcome SMS via Twilio
+        └── voice.js        # Initiates outbound voice call via Twilio
 ```
-
-Update this tree whenever significant directories or files are added.
 
 ---
 
@@ -128,12 +137,51 @@ When working on this codebase as an AI assistant:
 7. **Use conventional commits** — all commits must follow the convention above
 8. **Stay on assigned branch** — push only to the branch designated for the current session
 
+### Setup and Run
+
+```bash
+npm install
+cp .env.example .env
+# Remplir les valeurs dans .env
+node src/server.js
+```
+
+### Test local
+
+```bash
+# Tester le webhook (nouveau lead)
+curl -X POST http://localhost:3000/webhook/lead \
+  -H "Content-Type: application/json" \
+  -d '{"nom":"Jean Dupont","telephone":"+15141234567","email":"jean@example.com"}'
+
+# Tester le TwiML vocal
+curl http://localhost:3000/twiml/welcome?nom=Jean
+```
+
+### Variables d'environnement requises
+
+| Variable | Description |
+|---|---|
+| `PORT` | Port du serveur (défaut: 3000) |
+| `TWILIO_ACCOUNT_SID` | SID du compte Twilio |
+| `TWILIO_AUTH_TOKEN` | Token d'authentification Twilio |
+| `TWILIO_PHONE_NUMBER` | Numéro Twilio expéditeur (format E.164) |
+| `BASE_URL` | URL publique du serveur pour le callback TwiML |
+
+### Déploiement
+
+Déployer sur Railway, Render, ou tout serveur Node.js. Configurer `BASE_URL` avec l'URL publique, puis mettre à jour Make/Zapier avec cette URL.
+
+### Configuration Make/Zapier
+
+- **Trigger** : Google Sheets → "New Spreadsheet Row"
+- **Action** : Webhooks → POST vers `https://votre-domaine.com/webhook/lead`
+- **Body JSON** :
+  ```json
+  { "nom": "{{Nom}}", "telephone": "{{Téléphone}}", "email": "{{Email}}" }
+  ```
+
 ### What to update in this file as the project grows
-- [ ] Project description and purpose
-- [ ] Tech stack (language, framework, database)
-- [ ] Repository directory tree
-- [ ] Setup and run instructions
-- [ ] Test commands
-- [ ] Linting/formatting commands
-- [ ] Deployment process
-- [ ] Key architectural decisions and their rationale
+- [ ] Test commands (unit/integration)
+- [ ] Linting/formatting setup
+- [ ] Deployment process details
