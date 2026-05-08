@@ -105,9 +105,29 @@ def generer_email_relance(prenom: str, nom: str) -> tuple[str, str]:
 
 
 def envoyer_relance_lead(lead) -> bool:
-    """Envoie l'email de relance pour un lead donné."""
+    """Envoie l'email de relance pour un lead donné. Utilise l'agent IA si disponible."""
     if not lead.email or "@" not in lead.email:
         logger.info(f"Lead {lead.id} sans email valide — relance email ignorée.")
         return False
+
+    # Tenter l'email personnalisé via Claude
+    try:
+        from email_agent import generer_email_personnalise
+        resultat_ia = generer_email_personnalise(
+            prenom=lead.prenom or "",
+            nom=lead.nom or "",
+            entreprise=getattr(lead, "entreprise", "") or "",
+            demande=getattr(lead, "demande", "") or "",
+            horaires_rappel=getattr(lead, "horaires_rappel", "") or "",
+            remarques=getattr(lead, "remarques", "") or "",
+        )
+        if resultat_ia:
+            sujet, corps = resultat_ia
+            logger.info(f"Email IA généré pour lead {lead.id}")
+            return envoyer_email(lead.email, sujet, corps)
+    except Exception as e:
+        logger.warning(f"Agent email IA indisponible pour lead {lead.id}: {e}")
+
+    # Fallback sur le template statique
     sujet, corps = generer_email_relance(lead.prenom, lead.nom)
     return envoyer_email(lead.email, sujet, corps)
