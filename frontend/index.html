@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM — RevoluSolaire</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>☀️ RevoluSolaire — CRM Leads</h1>
+    <div class="header-actions">
+      <button id="btn-sync" onclick="syncManuel()">🔄 Sync maintenant</button>
+      <button id="btn-export" onclick="exporterCSV()">⬇️ Export CSV</button>
+      <button id="btn-export-json" onclick="exporterJSON()">⬇️ Export JSON</button>
+      <span id="sync-status"></span>
+    </div>
+  </div>
+</header>
+
+<!-- Tableau de bord stats -->
+<section class="stats-bar" id="stats-bar">
+  <div class="stat-card" onclick="filtrerStatut('')">
+    <span class="stat-num" id="stat-total">—</span>
+    <span class="stat-label">Total</span>
+  </div>
+  <div class="stat-card new" onclick="filtrerStatut('Nouveau')">
+    <span class="stat-num" id="stat-nouveaux">—</span>
+    <span class="stat-label">Nouveaux</span>
+  </div>
+  <div class="stat-card warn" onclick="filtrerStatut('À rappeler')">
+    <span class="stat-num" id="stat-rappeler">—</span>
+    <span class="stat-label">À rappeler</span>
+  </div>
+  <div class="stat-card info" onclick="filtrerStatut('Rendez-vous')">
+    <span class="stat-num" id="stat-rdv">—</span>
+    <span class="stat-label">Rendez-vous</span>
+  </div>
+  <div class="stat-card success" onclick="filtrerStatut('Signé')">
+    <span class="stat-num" id="stat-signes">—</span>
+    <span class="stat-label">Signés</span>
+  </div>
+  <div class="stat-card lost" onclick="filtrerStatut('Perdu')">
+    <span class="stat-num" id="stat-perdus">—</span>
+    <span class="stat-label">Perdus</span>
+  </div>
+</section>
+
+<!-- Filtres -->
+<section class="filters">
+  <input type="text" id="search-input" placeholder="🔍 Rechercher nom, téléphone, email…" oninput="rechercherDebounce()" />
+  <select id="filtre-statut" onchange="chargerLeads()">
+    <option value="">Tous les statuts</option>
+    <option value="Nouveau">Nouveau</option>
+    <option value="Appelé">Appelé</option>
+    <option value="Pas répondu">Pas répondu</option>
+    <option value="À rappeler">À rappeler</option>
+    <option value="Rendez-vous">Rendez-vous</option>
+    <option value="Signé">Signé</option>
+    <option value="Perdu">Perdu</option>
+  </select>
+</section>
+
+<!-- Liste des leads -->
+<main>
+  <table id="leads-table">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Téléphone</th>
+        <th>Email</th>
+        <th>Campagne</th>
+        <th>Arrivée</th>
+        <th>Temps écoulé</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="leads-tbody">
+      <tr><td colspan="8" style="text-align:center;padding:30px;color:#aaa;">Chargement…</td></tr>
+    </tbody>
+  </table>
+</main>
+
+<!-- Modal fiche lead -->
+<div id="modal-overlay" class="hidden" onclick="fermerModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="fermerModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

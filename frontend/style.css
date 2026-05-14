@@ -1,0 +1,235 @@
+/* ── Reset & base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f4f6f9;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* ── Header ───────────────────────────────────────────────────── */
+header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+  padding: 14px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: auto;
+}
+header h1 { font-size: 20px; font-weight: 700; }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+#btn-sync {
+  background: #f5a623;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+#btn-sync:hover { background: #e0941a; }
+#sync-status { font-size: 13px; color: #aad4ff; }
+
+/* ── Stats bar ────────────────────────────────────────────────── */
+.stats-bar {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+.stat-card {
+  flex: 1;
+  min-width: 110px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  border-top: 4px solid #ccc;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.stat-card.new  { border-color: #3b82f6; }
+.stat-card.warn { border-color: #f59e0b; }
+.stat-card.info { border-color: #8b5cf6; }
+.stat-card.success { border-color: #10b981; }
+.stat-card.lost { border-color: #ef4444; }
+.stat-num { display: block; font-size: 28px; font-weight: 800; color: #1a1a2e; }
+.stat-label { font-size: 12px; color: #888; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── Filters ──────────────────────────────────────────────────── */
+.filters {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.filters input, .filters select {
+  padding: 9px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+}
+.filters input { flex: 1; }
+
+/* ── Table ────────────────────────────────────────────────────── */
+main {
+  padding: 0 24px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto;
+}
+#leads-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+#leads-table thead th {
+  background: #1a1a2e;
+  color: #fff;
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+#leads-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.15s;
+}
+#leads-table tbody tr:hover { background: #f8f9ff; }
+#leads-table td {
+  padding: 11px 14px;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+/* Chronomètre coloré */
+.timer-green  { color: #10b981; font-weight: 700; }
+.timer-orange { color: #f59e0b; font-weight: 700; }
+.timer-red    { color: #ef4444; font-weight: 700; animation: pulse 1.5s infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+/* Badges statut */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-Nouveau       { background: #dbeafe; color: #1d4ed8; }
+.badge-Appelé        { background: #d1fae5; color: #065f46; }
+.badge-Pas-répondu   { background: #fef9c3; color: #92400e; }
+.badge-À-rappeler    { background: #fde68a; color: #92400e; }
+.badge-Rendez-vous   { background: #ede9fe; color: #5b21b6; }
+.badge-Signé         { background: #d1fae5; color: #065f46; border: 2px solid #10b981; }
+.badge-Perdu         { background: #fee2e2; color: #991b1b; }
+
+/* Boutons actions */
+.btn { display: inline-block; padding: 5px 11px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; text-decoration: none; }
+.btn-primary { background: #3b82f6; color: #fff; }
+.btn-primary:hover { background: #2563eb; }
+.btn-success { background: #10b981; color: #fff; }
+.btn-success:hover { background: #059669; }
+.btn-danger  { background: #ef4444; color: #fff; }
+.btn-danger:hover  { background: #dc2626; }
+.btn-sm { padding: 4px 9px; font-size: 12px; }
+
+/* ── Modal fiche lead ─────────────────────────────────────────── */
+#modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#modal-overlay.hidden { display: none; }
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.modal-close {
+  position: absolute; top: 14px; right: 16px;
+  background: none; border: none; font-size: 20px; cursor: pointer; color: #888;
+}
+.modal-close:hover { color: #333; }
+
+/* Fiche lead */
+.fiche-header { margin-bottom: 20px; }
+.fiche-header h2 { font-size: 22px; }
+.fiche-header .fiche-meta { font-size: 14px; color: #888; margin-top: 4px; }
+.fiche-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.fiche-field label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 3px; }
+.fiche-field span { font-size: 15px; font-weight: 600; }
+.fiche-field a { color: #3b82f6; }
+
+.section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #555; border-bottom: 2px solid #f0f0f0; padding-bottom: 6px; margin: 20px 0 12px; }
+
+/* Formulaire nouvel appel */
+.appel-form { background: #f8f9ff; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+.appel-form select, .appel-form textarea, .appel-form input {
+  width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 7px;
+  font-size: 14px; margin-bottom: 10px; background: #fff;
+}
+.appel-form textarea { height: 70px; resize: vertical; }
+.appel-form-row { display: flex; gap: 10px; align-items: flex-end; }
+.appel-form-row > * { flex: 1; }
+
+/* Historique appels */
+.appel-item {
+  background: #f9fafb; border-radius: 8px; padding: 12px; margin-bottom: 8px;
+  border-left: 4px solid #ccc;
+}
+.appel-item.resultat-Pas-répondu { border-color: #f59e0b; }
+.appel-item.resultat-RDV-pris    { border-color: #10b981; }
+.appel-item.resultat-Pas-intéressé { border-color: #ef4444; }
+.appel-item.resultat-Intéressé   { border-color: #3b82f6; }
+.appel-item-header { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+.appel-item-resultat { font-weight: 700; }
+.appel-item-date { color: #888; }
+.appel-item-notes { font-size: 13px; color: #555; margin-top: 4px; }
+
+/* Changement statut */
+.statut-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.statut-form select { padding: 7px 12px; border-radius: 7px; border: 1px solid #ddd; font-size: 14px; }
+
+/* Responsive */
+@media (max-width: 700px) {
+  .fiche-grid { grid-template-columns: 1fr; }
+  .stats-bar { gap: 8px; }
+  .stat-card { min-width: 80px; padding: 10px; }
+  .stat-num { font-size: 22px; }
+}

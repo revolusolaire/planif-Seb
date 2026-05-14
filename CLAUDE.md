@@ -6,9 +6,16 @@ This file provides context, conventions, and workflows for AI assistants (Claude
 
 ## Project Overview
 
-**planif-Seb** is a planning/scheduling application (French: *planification*). This file will be updated once the project's stack, purpose, and architecture are established.
+**planif-Seb** est un CRM de suivi de leads pour les campagnes publicitaires Meta (Facebook/Instagram) de **RevoluSolaire** (volets solaires). Il synchronise automatiquement les leads depuis Google Sheets, envoie des alertes Telegram, relance par email, et fournit une interface web de suivi complet.
 
-> **Status**: Repository initialized — no source code committed yet. Update this file after bootstrapping the project.
+---
+
+## Tech Stack
+
+- **Backend** : Python 3.11+ · FastAPI · SQLAlchemy · SQLite · APScheduler
+- **Frontend** : HTML/CSS/JS vanilla (pas de build nécessaire)
+- **Intégrations** : Google Sheets API v4 · Telegram Bot API · Gmail SMTP
+- **Hébergement** : VPS `72.62.233.55:58645`
 
 ---
 
@@ -16,11 +23,52 @@ This file provides context, conventions, and workflows for AI assistants (Claude
 
 ```
 planif-Seb/
-├── CLAUDE.md          # This file — AI assistant guide
-└── (project files)    # To be added
+├── CLAUDE.md               # Ce fichier
+├── .env.example            # Template de configuration
+├── start.sh                # Script de démarrage
+├── backend/
+│   ├── main.py             # API FastAPI + serveur frontend
+│   ├── database.py         # Modèles SQLAlchemy (Lead, Appel)
+│   ├── sheets.py           # Sync Google Sheets → CRM
+│   ├── notifications.py    # Alertes Telegram
+│   ├── email_service.py    # Emails de relance (Gmail SMTP)
+│   ├── scheduler.py        # Tâches planifiées (sync, rappels, emails)
+│   └── requirements.txt
+└── frontend/
+    ├── index.html          # Dashboard CRM
+    ├── style.css
+    └── app.js
 ```
 
-Update this tree whenever significant directories or files are added.
+## Setup & Run
+
+```bash
+# 1. Copier et configurer l'environnement
+cp .env.example backend/.env
+# Éditer backend/.env avec : TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID,
+#   GOOGLE_SHEET_IDS, GOOGLE_CREDENTIALS_FILE, SMTP_PASSWORD
+
+# 2. Déposer le fichier Google credentials
+cp ton_fichier.json backend/google_credentials.json
+
+# 3. Démarrer
+./start.sh
+```
+
+L'app est accessible sur `http://72.62.233.55:58645`
+
+## Workflow des leads
+
+1. Google Sheets synchro toutes les **3 minutes**
+2. Nouveau lead → alerte **Telegram immédiate**
+3. Non contacté à **15 min** → rappel Telegram
+4. Non contacté à **30 min** → rappel Telegram
+5. Non contacté à **1h** → rappel Telegram (urgent)
+6. Non contacté à **2h** → **email de relance automatique**
+
+## Statuts CRM
+
+`Nouveau` → `Appelé` | `Pas répondu` | `À rappeler` → `Rendez-vous` → `Signé` | `Perdu`
 
 ---
 
